@@ -53,7 +53,7 @@ public class LabelDetectorProcessor extends VisionProcessorBase<List<ImageLabel>
         super.stop();
         try {
             imageLabeler.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(TAG, "Exception thrown while trying to close ImageLabelerClient: " + e);
         }
     }

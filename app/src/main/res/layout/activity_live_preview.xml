@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#000"
     android:keepScreenOn="true"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
   <com.google.mlkit.vision.demo.CameraSourcePreview

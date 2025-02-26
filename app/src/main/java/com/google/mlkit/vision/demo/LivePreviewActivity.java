@@ -309,7 +309,7 @@ public final class LivePreviewActivity extends AppCompatActivity
          mode.setMode(Constant.GENDER_OPTION);
          try {
              classifier = new GenderClassifier(this);
-         } catch ( IOException e) {
+         } catch (Exception e) {
              LOGGER.e("Loading gender classifier");
          }
      }
@@ -318,7 +318,7 @@ public final class LivePreviewActivity extends AppCompatActivity
          mode.setMode(Constant.AGE_OPTION);
          try {
              classifier = new AgeClassifier(this);
-         } catch ( IOException e) {
+         } catch (Exception e) {
              LOGGER.e("Loading Age classifier");
          }
      }
@@ -327,7 +327,7 @@ public final class LivePreviewActivity extends AppCompatActivity
 
          try {
              classifier = new EmotionClassifier(this);
-         } catch ( IOException e) {
+         } catch (Exception e) {
              LOGGER.e("Loading Emotion classifier");
          }
      }
@@ -447,10 +447,15 @@ public final class LivePreviewActivity extends AppCompatActivity
             FaceDetectorOptions faceDetectorOptions =
                     PreferenceUtils.getFaceDetectorOptionsForLivePreview(this);
 
-            cameraSource.setMachineLearningFrameProcessor(
-                    new FaceDetectorProcessor(this ,faceDetectorOptions, mode.getMode(), classifier ));
+            if (cameraSource == null) {
+                cameraSource = new CameraSource(this, graphicOverlay);
+                setClassifier();
+            }
 
-            //createCameraSource(selectedModel);
+            Log.i(TAG, "Using Face Detector Processor");
+            cameraSource.setMachineLearningFrameProcessor(
+                    new FaceDetectorProcessor(this,faceDetectorOptions, mode.getMode(),  classifier));
+//            createCameraSource(selectedModel);
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -479,31 +484,31 @@ public final class LivePreviewActivity extends AppCompatActivity
         if (results != null && results.size() >= 2) {
             Classifier.Recognition recognition = results.get(0);
             if (recognition != null) {
-                if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
-                if (recognition.getConfidence() != null) {
+                if (recognition.title != null) recognitionTextView.setText(recognition.title);
+                if (recognition.confidence != null) {
                     recognitionValueTextView.setText(
-                            String.format("%.2f", (100 * recognition.getConfidence())) + "%");
-                    System.out.println(recognition.getTitle()+" "+String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+                            String.format("%.2f", (100 * recognition.confidence)) + "%");
+                    System.out.println(recognition.title +" "+String.format("%.2f", (100 * recognition.confidence)) + "%");
                 }
             }
 
             Classifier.Recognition recognition1 = results.get(1);
             if (recognition1 != null) {
-                if (recognition1.getTitle() != null) recognition1TextView.setText(recognition1.getTitle());
-                if (recognition1.getConfidence() != null) {
+                if (recognition1.title != null) recognition1TextView.setText(recognition1.title);
+                if (recognition1.confidence != null) {
                     recognition1ValueTextView.setText(
-                            String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
-                    System.out.println(recognition1.getTitle()+" "+String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
+                            String.format("%.2f", (100 * recognition1.confidence)) + "%");
+                    System.out.println(recognition1.title +" "+String.format("%.2f", (100 * recognition1.confidence)) + "%");
                 }
             }
             if (results.size() > 2) {
                 Classifier.Recognition recognition2 = results.get(2);
                 if (recognition2 != null) {
-                    if (recognition2.getTitle() != null)
-                        recognition2TextView.setText(recognition2.getTitle());
-                    if (recognition2.getConfidence() != null)
+                    if (recognition2.title != null)
+                        recognition2TextView.setText(recognition2.title);
+                    if (recognition2.confidence != null)
                         recognition2ValueTextView.setText(
-                                String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
+                                String.format("%.2f", (100 * recognition2.confidence)) + "%");
                 }
             }
             else {
