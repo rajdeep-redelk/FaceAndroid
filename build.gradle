@@ -17,18 +17,6 @@ buildscript {
     }
 }
 
-subprojects {
-    project.configurations.configureEach {
-        resolutionStrategy.eachDependency {
-
-        }
-
-        resolutionStrategy {
-            force("com.google.ai.edge.litert:litert-api:1.1.2")
-        }
-    }
-}
-
 allprojects {
     repositories {
         mavenLocal()
